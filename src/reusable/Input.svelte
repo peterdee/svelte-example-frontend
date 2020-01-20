@@ -1,4 +1,6 @@
 <script>
+  import { createEventDispatcher } from 'svelte';
+
   export let disabled = false;
   export let highlight = '';
   export let name = 'input';
@@ -6,17 +8,12 @@
   export let type = 'text';
   export let value = '';
 
-  /**
-   * Handle input with type
-   * @param event {object} - event object
-   * @returns {void}
-   */
-  const handleInput = (event) => {
-    value = type.match(/^(number|range)$/) ? Number(event.target.value) : event.target.value;
-  };
+  const dispatch = createEventDispatcher();
 
   // highlighting
   $: highlightInput = (highlight === 'error' || highlight === 'success') ? highlight : '';
+
+  const handleInput = (event) => dispatch('handle-input', event);
 
   // input ID 
   const id = `input-${name}`;
@@ -56,7 +53,7 @@
     transition: border-bottom 250ms ease;
   }
   .error {
-    border-bottom: 3px solid #ff2600;
+    border-bottom: 3px solid #ff2700;
     transition: border-bottom 250ms ease;
   }
   .success {
