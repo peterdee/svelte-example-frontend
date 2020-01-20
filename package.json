@@ -1,11 +1,31 @@
 {
-  "name": "svelte-app",
+  "name": "svelte-example-frontend",
   "version": "1.0.0",
+  "description": "Svelte application",
+  "private": true,
+  "author": {
+    "name": "Peter Dyumin",
+    "url": "https://github.com/peterdee"
+  },
+  "homepage": "https://github.com/peterdee/svelte-example-frontend",
+  "license": "ISC",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "start": "sirv public -s"
   },
+  "engines": {
+    "node": "13.6.0",
+    "npm": "6.13.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peterdee/svelte-example-frontend"
+  },
+  "keywords": [
+    "Application",
+    "Svelte"
+  ],
   "dependencies": {
     "sirv-cli": "^0.4.4",
     "svelte-router-spa": "^5.3.3"
