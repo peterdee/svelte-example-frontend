@@ -6,7 +6,6 @@
   export let name = 'input';
   export let placeholder = '';
   export let type = 'text';
-  export let value = '';
 
   const dispatch = createEventDispatcher();
 
