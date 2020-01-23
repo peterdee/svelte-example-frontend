@@ -12,6 +12,7 @@
   // highlighting
   $: highlightInput = (highlight === 'error' || highlight === 'success') ? highlight : '';
 
+  // handle input
   const handleInput = (event) => dispatch('handle-input', event);
 
   // input ID 

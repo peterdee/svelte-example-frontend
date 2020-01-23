@@ -4,10 +4,8 @@
   import Button from '../../reusable/Button.svelte';
   import Input from '../../reusable/Input.svelte';
 
-  export let email = '';
   export let emailHighlight = '';
   export let isLoading = false;
-  export let password = '';
   export let passwordHighlight = '';
 
   const dispatch = createEventDispatcher();
@@ -33,7 +31,6 @@
       name="email"
       placeholder="Email"
       type="text"
-      bind:value={email}
       on:handle-input={handleInput}
     />
   </div>
@@ -44,7 +41,6 @@
       name="password"
       placeholder="Password"
       type="password"
-      bind:value={password}
       on:handle-input={handleInput}
     />
   </div>

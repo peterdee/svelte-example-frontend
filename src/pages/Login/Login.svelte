@@ -1,6 +1,7 @@
 <script>
-  import { afterUpdate } from 'svelte';
+  import axios from 'axios';
 
+  import Error from '../../reusable/Error.svelte';
   import LoginForm from './LoginForm.svelte';
 
   let formError = '';
@@ -17,7 +18,7 @@
   /**
    * Handle form submit
    */
-  const handleForm = () => {
+  const handleForm = async () => {
     const { email = '', password = '' } = loginData;
     if (!(email && password)) {
       highlight.email = (!email && 'error') || '';
@@ -28,7 +29,16 @@
     highlight.email = highlight.password = 'success';
     isLoading = true;
 
-    // TODO: send request
+    try {
+      const response = await axios({
+        data: { ...loginData },
+        method: 'POST',
+        url: 'https://express-mongo-node.herokuapp.com/api/v1/login',
+      });
+      console.log('response', response);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   /**
@@ -40,9 +50,8 @@
   const handleInput = ({ detail: { name = '', value = '' } = {} }) => {
     loginData[name] = value;
     highlight[name] = '';
+    formError = '';
   }
-
-  // afterUpdate(() => console.log('afterUpdate', emailHighlight, passwordHighlight));
 </script>
 
 <div class="page-wrap">
@@ -50,14 +59,13 @@
     Login
   </div>
   <LoginForm
-    email={loginData.email}
-    password={loginData.password}
-    emailHighlight={ emailHighlight }
     { isLoading }
-    { passwordHighlight }
+    emailHighlight={highlight.email}
+    passwordHighlight={highlight.password}
     on:handle-form={handleForm}
     on:handle-input={handleInput}
   />
+  <Error message={formError} />
 </div>
 
 <style>
