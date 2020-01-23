@@ -1,6 +1,4 @@
 <script>
-  import { afterUpdate } from 'svelte';
-
   export let disabled = false;
   export let size = 'auto';
   export let text = '';
@@ -8,8 +6,6 @@
 
   // button size
   const buttonSize = size === 'small' || size === 'medium' || size === 'large' ? size : '';
-
-  afterUpdate(() => console.log(disabled));
 </script>
 
 <button
