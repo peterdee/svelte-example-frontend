@@ -15,7 +15,7 @@
 
 <style>
   .error-block {
-    height: 26px;
+    height: 24px;
     margin: 15px 0 15px;
     text-align: center;
     width: 100%;

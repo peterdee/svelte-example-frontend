@@ -30,7 +30,7 @@
       highlight={emailHighlight}
       name="email"
       placeholder="Email"
-      type="text"
+      type="email"
       on:handle-input={handleInput}
     />
   </div>
