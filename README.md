@@ -2,6 +2,8 @@
 
 ---
 
+[![Known Vulnerabilities](https://snyk.io/test/github/peterdee/svelte-example-frontend/badge.svg?targetFile=package.json)](https://snyk.io/test/github/peterdee/svelte-example-frontend?targetFile=package.json)
+
 # svelte app
 
 This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.
