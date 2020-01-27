@@ -43,7 +43,7 @@
   }
   input:disabled {
     background-color: #e0e0e0;
-    cursor: not-allowed;
+    cursor: default;
     outline: none;
     transition: background-color 250ms ease;
   }

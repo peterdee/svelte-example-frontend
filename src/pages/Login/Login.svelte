@@ -1,5 +1,6 @@
 <script>
   import axios from 'axios';
+  import { Navigate } from 'svelte-router-spa';
 
   import Error from '../../reusable/Error.svelte';
   import LoginForm from './LoginForm.svelte';
@@ -66,9 +67,34 @@
     on:handle-input={handleInput}
   />
   <Error message={formError} />
+  <div class="center margin noselect">
+    <a
+      class={ isLoading ? 'disable-link' : '' }
+      href="/password-recovery"
+    >
+      Forgot your password?
+    </a>
+  </div>
+  <div class="center margin noselect">
+    <a
+      class={ isLoading ? 'disable-link' : '' }
+      href="/registration"
+    >
+      Don't have an account?
+    </a>
+  </div>
 </div>
 
 <style>
+  .center {
+    text-align: center;
+  }
+  .disable-link {
+    color: #909090;
+    cursor: default;
+    pointer-events: none;
+    text-decoration: none;
+  }
   .margin {
     margin-bottom: 15px;
   }
