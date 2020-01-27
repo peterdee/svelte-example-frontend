@@ -44,7 +44,7 @@
   button:disabled {
     background-color: #909090;
     border-bottom: 3px solid #909090;
-    cursor: not-allowed;
+    cursor: default;
     transition: background-color 500ms ease, border-bottom 250ms ease;
   }
   .large {
