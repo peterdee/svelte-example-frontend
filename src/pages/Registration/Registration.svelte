@@ -60,10 +60,6 @@
         method: 'POST',
         url: 'https://express-mongo-node.herokuapp.com/api/v1/registration',
       });
-
-
-      return console.log(response.data)
-
       const { data: { data: { role = '', tokens: { access = '', refresh = '' } } = {} } = {} } = response;
       
       // stop the loader
@@ -71,7 +67,7 @@
 
       // make sure that everything's in place
       if (!(access && refresh && role)) {
-        highlight.email = highlight.password = '';
+        keys.forEach((key = '') => highlight[key] = '');
         return formError = 'Access denied!';
       }
 
@@ -90,9 +86,9 @@
 
       // handle error response
       const { response: { data: { data = {}, info = '', status = null } = {} } = {} } = error;
-      if (info === 'ACCESS_DENIED' && status === 401) {
-        highlight.email = highlight.password = 'error';
-        return formError = 'Access denied!';
+      if (info === 'EMAIL_ALREADY_IN_USE' && status === 400) {
+        highlight.email = 'error';
+        return formError = 'Email address already in use!';
       }
       if (info === 'INVALID_DATA' && status === 400) {
         const { invalid = [] } = data;
@@ -104,12 +100,12 @@
         missing.forEach((field = '') => highlight[field] = 'error');
         return formError = 'Missing data!';
       }
+
+      keys.forEach((key = '') => highlight[key] = '');
       if (info === 'INTERNAL_SERVER_ERROR' && status === 500) {
-        highlight.email = highlight.password = '';
         return formError = 'Oops! Something went wrong...';
       }
-      
-      highlight.email = highlight.password = '';
+
       return formError = 'Access denied!';
     }
   };
