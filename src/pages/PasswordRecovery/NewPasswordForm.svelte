@@ -141,14 +141,6 @@
       Don't have an account?
     </a>
   </div>
-  <div class="center margin noselect">
-    <a
-      class={ isLoading ? 'disable-link' : '' }
-      href="/"
-    >
-      Back to Index
-    </a>
-  </div>
 </div>
 
 <style>
