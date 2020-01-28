@@ -2,22 +2,21 @@
   import axios from 'axios';
   import { navigateTo } from 'svelte-router-spa';
 
-  import { getTokens, storeTokens } from '../../utilities/tokens';
-  import { store } from '../../store';
+  import { getTokens } from '../../utilities/tokens';
 
   import Error from '../../reusable/Error.svelte';
   import Loader from '../../reusable/Loader.svelte';
-  import LoginForm from './LoginForm.svelte';
+  import PasswordRecoveryForm from './PasswordRecoveryForm.svelte';
+  import PasswordRecoveryInfo from './PasswordRecoveryInfo.svelte';
 
+  let emailSent = false;
   let formError = '';
   let highlight = {
     email: '',
-    password: '',
   };
   let isLoading = false;
-  let loginData = {
+  let recoveryData = {
     email: '',
-    password: '',
   };
 
   // redirect to index if the token is there
@@ -30,45 +29,31 @@
    */
   const handleForm = async () => {
     // check the data
-    const { email = '', password = '' } = loginData;
-    if (!(email && password)) {
-      highlight.email = (!email && 'error') || '';
-      highlight.password = (!password && 'error') || '';
+    const { email = '' } = recoveryData;
+    if (!email) {
+      highlight.email = 'error';
       return formError = 'Please provide the necessary data!';
     }
 
     // highlight inputs, start loading
     formError = '';
-    highlight.email = highlight.password = 'success';
+    highlight.email = 'success';
     isLoading = true;
 
     // send the login request
     try {
-      const response = await axios({
-        data: { ...loginData },
-        method: 'POST',
-        url: 'https://express-mongo-node.herokuapp.com/api/v1/login',
-      });
-      const { data: { data: { role = '', tokens: { access = '', refresh = '' } } = {} } = {} } = response;
+      // const response = await axios({
+      //   data: { ...recoveryData },
+      //   method: 'POST',
+      //   url: 'https://express-mongo-node.herokuapp.com/api/v1/password-recovery/send-email',
+      // });
       
       // stop the loader
       isLoading = false;
 
-      // make sure that everything's in place
-      if (!(access && refresh && role)) {
-        highlight.email = highlight.password = '';
-        return formError = 'Access denied!';
-      }
-
-      // store tokens
-      storeTokens({ accessToken: access, refreshToken: refresh });
-
-      // save data in the application store
-      store.setLoggedIn(true);
-      store.setRole(role);
-
       // redirect to the index
-      return navigateTo('/');
+      // return navigateTo('/');
+      return emailSent = true;
     } catch (error) {
       // remove the loader
       isLoading = false;
@@ -106,7 +91,7 @@
    * @returns {*}
    */
   const handleInput = ({ detail: { name = '', value = '' } = {} }) => {
-    loginData[name] = value;
+    recoveryData[name] = value;
     highlight[name] = '';
     formError = '';
   }
@@ -115,38 +100,28 @@
 <div class="page-wrap">
   <Loader { isLoading } />
   <div class="margin page-title noselect">
-    Login
+    Password Recovery
   </div>
-  <LoginForm
-    { isLoading }
-    emailHighlight={highlight.email}
-    passwordHighlight={highlight.password}
-    on:handle-form={handleForm}
-    on:handle-input={handleInput}
-  />
+  {#if emailSent}
+    <PasswordRecoveryInfo email={recoveryData.email} />
+  {:else}
+    <div class="margin page-subtitle noselect">
+      Please provide your email address
+    </div>  
+    <PasswordRecoveryForm
+      { isLoading }
+      emailHighlight={highlight.email}
+      on:handle-form={handleForm}
+      on:handle-input={handleInput}
+    />
+  {/if}
   <Error message={formError} />
   <div class="center margin noselect">
     <a
       class={ isLoading ? 'disable-link' : '' }
-      href="/password-recovery"
+      href="/login"
     >
-      Forgot your password?
-    </a>
-  </div>
-  <div class="center margin noselect">
-    <a
-      class={ isLoading ? 'disable-link' : '' }
-      href="/registration"
-    >
-      Don't have an account?
-    </a>
-  </div>
-  <div class="center margin noselect">
-    <a
-      class={ isLoading ? 'disable-link' : '' }
-      href="/"
-    >
-      Back to Index
+      Back to Login
     </a>
   </div>
 </div>
@@ -169,6 +144,11 @@
     font-weight: 100;
     text-align: center;
     text-transform: uppercase;
+  }
+  .page-subtitle {
+    font-size: 1em;
+    font-weight: 300;
+    text-align: center;
   }
   .page-wrap {
     display: flex;
