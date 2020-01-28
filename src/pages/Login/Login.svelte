@@ -1,8 +1,12 @@
 <script>
   import axios from 'axios';
-  import { Navigate } from 'svelte-router-spa';
+  import { navigateTo } from 'svelte-router-spa';
+
+  import { getTokens, storeTokens } from '../../utilities/tokens';
+  import { store } from '../../store';
 
   import Error from '../../reusable/Error.svelte';
+  import Loader from '../../reusable/Loader.svelte';
   import LoginForm from './LoginForm.svelte';
 
   let formError = '';
@@ -15,6 +19,11 @@
     email: '',
     password: '',
   };
+
+  // redirect to index if the token is there
+  if (getTokens().accessToken) {
+    navigateTo('/');
+  }
 
   /**
    * Handle form submit
@@ -40,8 +49,9 @@
         method: 'POST',
         url: 'https://express-mongo-node.herokuapp.com/api/v1/login',
       });
-
       const { data: { data: { role = '', tokens: { access = '', refresh = '' } } = {} } = {} } = response;
+      
+      // stop the loader
       isLoading = false;
 
       // make sure that everything's in place
@@ -50,10 +60,20 @@
         return formError = 'Access denied!';
       }
 
-      // TODO: save tokens to the localStorage, save role to the application store
+      // store tokens
+      storeTokens({ accessToken: access, refreshToken: refresh });
 
+      // save data in the application store
+      store.setLoggedIn(true);
+      store.setRole(role);
+
+      // redirect to the index
+      return navigateTo('/');
     } catch (error) {
+      // remove the loader
       isLoading = false;
+
+      // handle error response
       const { response: { data: { data = {}, info = '', status = null } = {} } = {} } = error;
       if (info === 'ACCESS_DENIED' && status === 401) {
         highlight.email = highlight.password = 'error';
@@ -93,6 +113,7 @@
 </script>
 
 <div class="page-wrap">
+  <Loader { isLoading } />
   <div class="margin page-title noselect">
     Login
   </div>

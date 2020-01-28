@@ -5,6 +5,7 @@
 <div class="page-wrap">
   <h1>Index</h1>
   <p><Navigate to="login">Login</Navigate></p>
+  <p><Navigate to="registration">Registration</Navigate></p>
 </div>
 
 <style>
