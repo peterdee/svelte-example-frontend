@@ -89,12 +89,12 @@
         missing.forEach((field = '') => highlight[field] = 'error');
         return formError = 'Missing data!';
       }
+      
+      highlight.email = highlight.password = '';      
       if (info === 'INTERNAL_SERVER_ERROR' && status === 500) {
-        highlight.email = highlight.password = '';
         return formError = 'Oops! Something went wrong...';
       }
-      
-      highlight.email = highlight.password = '';
+
       return formError = 'Access denied!';
     }
   };
