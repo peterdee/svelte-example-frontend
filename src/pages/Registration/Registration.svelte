@@ -86,10 +86,6 @@
 
       // handle error response
       const { response: { data: { data = {}, info = '', status = null } = {} } = {} } = error;
-      if (info === 'EMAIL_ALREADY_IN_USE' && status === 400) {
-        highlight.email = 'error';
-        return formError = 'Email address already in use!';
-      }
       if (info === 'INVALID_DATA' && status === 400) {
         const { invalid = [] } = data;
         invalid.forEach((field = '') => highlight[field] = 'error');
@@ -99,6 +95,10 @@
         const { missing = [] } = data;
         missing.forEach((field = '') => highlight[field] = 'error');
         return formError = 'Missing data!';
+      }
+      if (info === 'EMAIL_ALREADY_IN_USE' && status === 403) {
+        highlight.email = 'error';
+        return formError = 'Email address already in use!';
       }
 
       keys.forEach((key = '') => highlight[key] = '');
