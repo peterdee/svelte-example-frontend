@@ -3,6 +3,9 @@
   import { Navigate } from 'svelte-router-spa';
 
   import { deleteTokens, getTokens } from '../../utilities/tokens';
+  import { store } from '../../store';
+
+  $: loggedIn = $store.auth.loggedIn;
 
   /**
    * Handle logging out from a single device
@@ -19,6 +22,8 @@
         method: 'POST',
         url: 'https://express-mongo-node.herokuapp.com/api/v1/logout',
       });
+
+      store.setLoggedIn(false);
       return deleteTokens();
     } catch (error) {
       return deleteTokens();
@@ -39,6 +44,8 @@
         method: 'GET',
         url: 'https://express-mongo-node.herokuapp.com/api/v1/logout/all',
       });
+      
+      store.setLoggedIn(false);
       return deleteTokens();
     } catch (error) {
       return deleteTokens();
@@ -48,11 +55,16 @@
 
 <div class="page-wrap">
   <h1>Index</h1>
+
+  <div>Logged in: {loggedIn}</div>
+
   <p><Navigate to="login">Login</Navigate></p>
   <p><Navigate to="password-recovery">Password recovery</Navigate></p>
   <p><Navigate to="registration">Registration</Navigate></p>
-  <div on:click={logout}>Log out from a single device</div>
-  <div on:click={logoutAll}>Log out from all devices</div>
+  {#if loggedIn}
+    <div on:click={logout}>Log out from a single device</div>
+    <div on:click={logoutAll}>Log out from all devices</div>
+  {/if}
 </div>
 
 <style>
