@@ -5,9 +5,9 @@
   import { getTokens } from '../../utilities/tokens';
 
   import Error from '../../reusable/Error.svelte';
+  import Form from './Form.svelte';
+  import Info from './Info.svelte';
   import Loader from '../../reusable/Loader.svelte';
-  import PasswordRecoveryForm from './Form.svelte';
-  import PasswordRecoveryInfo from './Info.svelte';
 
   export let currentRoute = {};
   export let params; // this is not used, investigate the router module
@@ -48,7 +48,7 @@
     highlight.email = 'success';
     isLoading = true;
 
-    // send the login request
+    // send the request
     try {
       const response = await axios({
         data: { ...recoveryData },
@@ -79,7 +79,7 @@
       }
       if (info === 'ACCESS_DENIED' && status === 401) {
         highlight.email = 'error';
-        return formError = 'Access denied!';
+        return formError = 'Account not found!';
       }
       
       highlight.email = '';      
@@ -110,12 +110,12 @@
     Password Recovery
   </div>
   {#if emailSent}
-    <PasswordRecoveryInfo />
+    <Info />
   {:else}
     <div class="page-subtitle margin noselect">
       Please provide your email address
     </div>  
-    <PasswordRecoveryForm
+    <Form
       { isLoading }
       email={recoveryData.email}
       emailHighlight={highlight.email}
