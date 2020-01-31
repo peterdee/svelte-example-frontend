@@ -128,7 +128,7 @@
   <div class="center margin noselect">
     <a
       class={ isLoading ? 'disable-link' : '' }
-      href="/password-recovery"
+      href={`/get-password-recovery-link/${loginData.email}`}
     >
       Forgot your password?
     </a>

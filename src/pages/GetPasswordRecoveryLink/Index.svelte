@@ -6,8 +6,11 @@
 
   import Error from '../../reusable/Error.svelte';
   import Loader from '../../reusable/Loader.svelte';
-  import PasswordRecoveryForm from './PasswordRecoveryForm.svelte';
-  import PasswordRecoveryInfo from './PasswordRecoveryInfo.svelte';
+  import PasswordRecoveryForm from './Form.svelte';
+  import PasswordRecoveryInfo from './Info.svelte';
+
+  export let currentRoute = {};
+  export let params; // this is not used, investigate the router module
 
   let emailSent = false;
   let formError = '';
@@ -19,6 +22,10 @@
     email: '',
   };
 
+  // if the email address was passed
+  const { namedParams: { email: passedEmail = '' } = {} } = currentRoute;
+  recoveryData.email = passedEmail;
+
   // redirect to index if the token is there
   if (getTokens().accessToken) {
     navigateTo('/');
@@ -26,6 +33,7 @@
 
   /**
    * Handle form submit
+   * @returns {*}
    */
   const handleForm = async () => {
     // check the data
@@ -42,17 +50,16 @@
 
     // send the login request
     try {
-      // const response = await axios({
-      //   data: { ...recoveryData },
-      //   method: 'POST',
-      //   url: 'https://express-mongo-node.herokuapp.com/api/v1/password-recovery/send-email',
-      // });
+      const response = await axios({
+        data: { ...recoveryData },
+        method: 'POST',
+        url: 'https://express-mongo-node.herokuapp.com/api/v1/password-recovery/send-email',
+      });
       
       // stop the loader
       isLoading = false;
 
-      // redirect to the index
-      // return navigateTo('/');
+      // show the info page
       return emailSent = true;
     } catch (error) {
       // remove the loader
@@ -60,10 +67,6 @@
 
       // handle error response
       const { response: { data: { data = {}, info = '', status = null } = {} } = {} } = error;
-      if (info === 'ACCESS_DENIED' && status === 401) {
-        highlight.email = highlight.password = 'error';
-        return formError = 'Access denied!';
-      }
       if (info === 'INVALID_DATA' && status === 400) {
         const { invalid = [] } = data;
         invalid.forEach((field = '') => highlight[field] = 'error');
@@ -74,8 +77,12 @@
         missing.forEach((field = '') => highlight[field] = 'error');
         return formError = 'Missing data!';
       }
+      if (info === 'ACCESS_DENIED' && status === 401) {
+        highlight.email = 'error';
+        return formError = 'Access denied!';
+      }
       
-      highlight.email = highlight.password = '';      
+      highlight.email = '';      
       if (info === 'INTERNAL_SERVER_ERROR' && status === 500) {
         return formError = 'Oops! Something went wrong...';
       }
@@ -103,13 +110,14 @@
     Password Recovery
   </div>
   {#if emailSent}
-    <PasswordRecoveryInfo email={recoveryData.email} />
+    <PasswordRecoveryInfo />
   {:else}
-    <div class="margin page-subtitle noselect">
+    <div class="page-subtitle margin noselect">
       Please provide your email address
     </div>  
     <PasswordRecoveryForm
       { isLoading }
+      email={recoveryData.email}
       emailHighlight={highlight.email}
       on:handle-form={handleForm}
       on:handle-input={handleInput}

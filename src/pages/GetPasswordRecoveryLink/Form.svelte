@@ -4,6 +4,7 @@
   import Button from '../../reusable/Button.svelte';
   import Input from '../../reusable/Input.svelte';
 
+  export let email = '';
   export let emailHighlight = '';
   export let isLoading = false;
 
@@ -30,6 +31,7 @@
       name="email"
       placeholder="Email"
       type="email"
+      value={email}
       on:handle-input={handleInput}
     />
   </div>
