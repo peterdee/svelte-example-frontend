@@ -2,23 +2,29 @@
   import axios from 'axios';
   import { navigateTo } from 'svelte-router-spa';
 
-  import { getTokens, storeTokens } from '../../utilities/tokens';
-  import { store } from '../../store';
+  import { getTokens } from '../../utilities/tokens';
 
   import Error from '../../reusable/Error.svelte';
+  import Form from './Form.svelte';
+  import Info from './Info.svelte';
   import Loader from '../../reusable/Loader.svelte';
-  import LoginForm from './LoginForm.svelte';
 
+  export let currentRoute = {};
+  export let params; // this is not used, investigate the router module
+
+  let data = {
+    email: '',
+  };
+  let emailSent = false;
   let formError = '';
   let highlight = {
     email: '',
-    password: '',
   };
   let isLoading = false;
-  let loginData = {
-    email: '',
-    password: '',
-  };
+
+  // if the email address was passed
+  const { namedParams: { email: passedEmail = '' } = {} } = currentRoute;
+  data.email = passedEmail;
 
   // redirect to index if the token is there
   if (getTokens().accessToken) {
@@ -27,48 +33,34 @@
 
   /**
    * Handle form submit
+   * @returns {*}
    */
   const handleForm = async () => {
     // check the data
-    const { email = '', password = '' } = loginData;
-    if (!(email && password)) {
-      highlight.email = (!email && 'error') || '';
-      highlight.password = (!password && 'error') || '';
+    const { email = '' } = data;
+    if (!email) {
+      highlight.email = 'error';
       return formError = 'Please provide the necessary data!';
     }
 
     // highlight inputs, start loading
     formError = '';
-    highlight.email = highlight.password = 'success';
+    highlight.email = 'success';
     isLoading = true;
 
-    // send the login request
+    // send the request
     try {
-      const response = await axios({
-        data: { ...loginData },
+      await axios({
+        data,
         method: 'POST',
-        url: 'https://express-mongo-node.herokuapp.com/api/v1/login',
+        url: 'https://express-mongo-node.herokuapp.com/api/v1/account-recovery/send-email',
       });
-      const { data: { data: { role = '', tokens: { access = '', refresh = '' } } = {} } = {} } = response;
       
       // stop the loader
       isLoading = false;
 
-      // make sure that everything's in place
-      if (!(access && refresh && role)) {
-        highlight.email = highlight.password = '';
-        return formError = 'Access denied!';
-      }
-
-      // store tokens
-      storeTokens({ accessToken: access, refreshToken: refresh });
-
-      // save data in the application store
-      store.setLoggedIn(true);
-      store.setRole(role);
-
-      // redirect to the index
-      return navigateTo('/');
+      // show the info page
+      return emailSent = true;
     } catch (error) {
       // remove the loader
       isLoading = false;
@@ -86,16 +78,11 @@
         return formError = 'Missing data!';
       }
       if (info === 'ACCESS_DENIED' && status === 401) {
-        highlight.email = highlight.password = 'error';
-        return formError = 'Access denied!';
+        highlight.email = 'error';
+        return formError = 'Account not found!';
       }
-      if (info === 'ACCOUNT_IS_BLOCKED' && status === 403) {
-        highlight.email = highlight.password = 'error';
-        formError = 'This account is blocked!';
-        return navigateTo(`/get-account-recovery-link/${loginData.email}`);
-      }
-
-      highlight.email = highlight.password = '';      
+      
+      highlight.email = '';      
       if (info === 'INTERNAL_SERVER_ERROR' && status === 500) {
         return formError = 'Oops! Something went wrong...';
       }
@@ -111,7 +98,7 @@
    * @returns {*}
    */
   const handleInput = ({ detail: { name = '', value = '' } = {} }) => {
-    loginData[name] = value;
+    data[name] = value;
     highlight[name] = '';
     formError = '';
   }
@@ -120,38 +107,32 @@
 <div class="page-wrap">
   <Loader { isLoading } />
   <div class="margin page-title noselect">
-    Login
+    Account Recovery
   </div>
-  <LoginForm
-    { isLoading }
-    emailHighlight={highlight.email}
-    passwordHighlight={highlight.password}
-    on:handle-form={handleForm}
-    on:handle-input={handleInput}
-  />
+  {#if emailSent}
+    <Info />
+  {:else}
+    <div class="page-subtitle error margin noselect">
+      Your account was blocked due to the large number of failed login attempts
+    </div> 
+    <div class="page-subtitle margin noselect">
+      Please provide your email address to unblock your account
+    </div>  
+    <Form
+      { isLoading }
+      email={data.email}
+      emailHighlight={highlight.email}
+      on:handle-form={handleForm}
+      on:handle-input={handleInput}
+    />
+  {/if}
   <Error message={formError} />
   <div class="center margin noselect">
     <a
       class={ isLoading ? 'disable-link' : '' }
-      href={`/get-password-recovery-link/${loginData.email}`}
+      href="/login"
     >
-      Forgot your password?
-    </a>
-  </div>
-  <div class="center margin noselect">
-    <a
-      class={ isLoading ? 'disable-link' : '' }
-      href="/registration"
-    >
-      Don't have an account?
-    </a>
-  </div>
-  <div class="center margin noselect">
-    <a
-      class={ isLoading ? 'disable-link' : '' }
-      href="/"
-    >
-      Back to Index
+      Back to Login
     </a>
   </div>
 </div>
@@ -166,6 +147,9 @@
     pointer-events: none;
     text-decoration: none;
   }
+  .error {
+    color: #ff2700;
+  }
   .margin {
     margin-bottom: 15px;
   }
@@ -174,6 +158,11 @@
     font-weight: 100;
     text-align: center;
     text-transform: uppercase;
+  }
+  .page-subtitle {
+    font-size: 1em;
+    font-weight: 300;
+    text-align: center;
   }
   .page-wrap {
     display: flex;

@@ -1,6 +1,7 @@
 <script>
   import axios from 'axios';
   import { Navigate } from 'svelte-router-spa';
+  import { onMount } from 'svelte';
 
   import { deleteTokens, getTokens } from '../../utilities/tokens';
   import { store } from '../../store';
@@ -51,6 +52,16 @@
       return deleteTokens();
     }
   };
+
+  /**
+   * On component mounting
+   */
+  onMount(() => {
+    const { accessToken = '' } = getTokens();
+    if (accessToken) {
+      return store.setLoggedIn(true);
+    }
+  });
 </script>
 
 <div class="page-wrap">
