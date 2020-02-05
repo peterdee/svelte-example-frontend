@@ -26,6 +26,9 @@
     password: '',
   };
 
+  // make sure that the header is hidden
+  store.setShowHeader(false);
+
   // redirect to index if the token is there
   if (getTokens().accessToken) {
     navigateTo('/');

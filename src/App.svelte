@@ -1,17 +1,13 @@
 <script>
-  import { Router,  } from 'svelte-router-spa';
+  import { Router } from 'svelte-router-spa';
 
   import { store } from './store';
-
-  export let currentRoute;
 
   import Footer from './components/Footer.svelte';
   import Header from './components/Header.svelte';
   import { routes } from './router';
 
   $: showHeader = $store.nav.showHeader;
-
-  const withHeader = ['/'];
 </script>
 
 {#if showHeader}
@@ -29,7 +25,7 @@
     justify-content: flex-start;
   }
   .with-header {
-    min-height: calc(100vh - 90px);
+    min-height: calc(100vh - 110px);
   }
   .without-header {
     min-height: calc(100vh - 30px);

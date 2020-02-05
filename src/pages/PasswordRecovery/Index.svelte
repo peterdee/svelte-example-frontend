@@ -3,6 +3,7 @@
   import { navigateTo } from 'svelte-router-spa';
 
   import { getTokens } from '../../utilities/tokens';
+  import { store } from '../../store';
 
   import Error from '../../reusable/Error.svelte';
   import Form from './Form.svelte';
@@ -26,6 +27,9 @@
 
   // if the email address was passed
   const { namedParams: { code = '' } = {} } = currentRoute;
+
+  // make sure that the header is hidden
+  store.setShowHeader(false);
 
   // redirect to index if the token is there
   if (getTokens().accessToken) {
