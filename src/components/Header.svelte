@@ -17,6 +17,7 @@
   .header-wrap {
     display: flex;
     flex-direction: row;
+    height: 60px;
     justify-content: flex-start;
     width: 100%;
   }

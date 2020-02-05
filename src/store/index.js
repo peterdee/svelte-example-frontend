@@ -6,6 +6,9 @@ const initialState = {
     loggedIn: false,
     role: 'user',
   },
+  nav: {
+    showHeader: false,
+  },
 };
 
 /**
@@ -27,6 +30,18 @@ function createStore() {
       auth: {
         ...state.auth,
         loggedIn,
+      },
+    })),
+    /**
+     * Set header display
+     * @param showHeader {boolean} - should the header be shown
+     * @returns {object} - new store state object
+     */
+    setShowHeader: (showHeader = false) => update((state) => ({
+      ...state,
+      nav: {
+        ...state.nav,
+        showHeader,
       },
     })),
     /**
