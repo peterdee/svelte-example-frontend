@@ -7,7 +7,7 @@ const initialState = {
     role: 'user',
   },
   nav: {
-    showHeader: false,
+    showHeader: true,
   },
 };
 
@@ -33,7 +33,7 @@ function createStore() {
       },
     })),
     /**
-     * Set header display
+     * Display or remove the header
      * @param showHeader {boolean} - should the header be shown
      * @returns {object} - new store state object
      */

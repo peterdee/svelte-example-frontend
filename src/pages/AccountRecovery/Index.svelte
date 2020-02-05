@@ -4,6 +4,7 @@
   import { onMount } from 'svelte';
 
   import { getTokens } from '../../utilities/tokens';
+  import { store } from '../../store';
 
   import Error from '../../reusable/Error.svelte';
   import Info from './Info.svelte';
@@ -18,6 +19,9 @@
 
   // if the email address was passed
   const { namedParams: { code = '' } = {} } = currentRoute;
+
+  // make sure that the header is hidden
+  store.setShowHeader(false);
 
   // redirect to index if the token is there
   if (getTokens().accessToken) {

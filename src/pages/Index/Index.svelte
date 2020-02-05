@@ -8,6 +8,9 @@
 
   $: loggedIn = $store.auth.loggedIn;
 
+  // make sure that the header is displayed
+  store.setShowHeader(true);
+  
   /**
    * Handle logging out from a single device
    * @returns {*}
