@@ -1,21 +1,30 @@
 <script>
+  import { navigateTo } from 'svelte-router-spa';
+
   import { store } from '../store';
 
   $: loggedIn = $store.auth.loggedIn;
 
   let showOptions = false;
 
-  const toggleOptions = () => showOptions = !showOptions;
-
-  window.onclick = (event) => {
-    const { target: { id = '' } = {} } = event;
-    showOptions = ((!id || id !== 'options') && !showOptions) || showOptions;
+  const clickListener = (event = {}) => {
+    event.preventDefault();
+    const { target: { parentElement: { id = '' } = {} } = {} } = event;
+    return showOptions = id && id === 'options';
   };
+
+  const toggleOptions = () => {
+    showOptions = !showOptions;
+    return window.addEventListener('click', clickListener, { once: true });
+  }
 </script>
 
 <header class="header-wrap noselect">
   <div class="header-boundaries">
-    <div class="header-left">
+    <div
+      class="header-left pointer"
+      on:click={() => navigateTo('/')}
+    >
       <div class="header-logo"></div>
       <div class="header-branding">
         BlogPost
@@ -23,20 +32,27 @@
     </div>
     <div class="header-left">
       {#if loggedIn}
+        <div class="margin-right">
+          <a href="/my-posts">My posts</a>
+        </div>
+        <div class="margin-right">
+          <a href="/favorites">Favorites</a>
+        </div>
         <div>
           <div
-            class="cog-logo"
-            on:click={toggleOptions}
+            class="check pointer"
+            on:click|stopPropagation={toggleOptions}
           ></div>
           {#if showOptions}
             <div
               class="options"
               id="options"
             >
-              <div>
-                <a href="/account">Account</a>
+              <div class="options-item">
+                <a href="/profile">My profile</a>
               </div>
-              <div>
+              <div class="options-divider"></div>
+              <div class="options-item">
                 <a href="/logout">Logout</a>
               </div>
             </div>
@@ -55,10 +71,8 @@
 </header>
 
 <style>
-  .cog-logo {
-    background: url(../assets/gear.png) no-repeat center;
-    border-radius: 50%;
-    cursor: pointer;
+  .check {
+    background: url(../assets/check.png) no-repeat center;
     height: 50px;
     width: 50px;
   }
@@ -68,8 +82,8 @@
     flex-direction: row;
     height: 80px;
     justify-content: space-between;
-    margin: 0 35px;
     max-width: 768px;
+    padding: 0 35px;
     width: 100%;
   }
   .header-branding {
@@ -79,6 +93,7 @@
     margin-left: 10px;
   }
   .header-left {
+    align-items: center;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -98,13 +113,28 @@
   .margin-left {
     margin-left: 15px;
   }
+  .margin-right {
+    margin-right: 15px;
+  }
   .options {
     background-color: #f0f0f0;
     border-radius: 5px;
+    cursor: default;
     display: flex;
     flex-direction: column;
-    padding: 10px;
     position: absolute;
     z-index: 1;
+  }
+  .options-divider {
+    background-color: #aaa;
+    height: 1px;
+    width: 100%;
+  }
+  .options-item {
+    padding: 15px;
+    text-align: center;
+  }
+  .pointer {
+    cursor: pointer;
   }
 </style>
