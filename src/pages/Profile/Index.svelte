@@ -3,19 +3,14 @@
   import { navigateTo } from 'svelte-router-spa';
   import { onMount } from 'svelte';
 
-  import DetailsForm from './DetailsForm.svelte';
+  import DetailsSection from './DetailsSection.svelte';
+  import Error from '../../reusable/Error.svelte';
   import Loader from '../../reusable/Loader.svelte';
 
   import { deleteTokens, getTokens } from '../../utilities/tokens';
   import { store } from '../../store';
 
   let formError = '';
-  let highlight = {
-    avatarLink: '',
-    email: '',
-    firstName: '',
-    lastName: '',
-  };
   let isLoading = true;
   let profile = {
     avatarLink: '',
@@ -29,33 +24,6 @@
 
   // make sure that the header is displayed
   store.setShowHeader(true);
-
-  /**
-   * Handle form submit
-   * @returns {*}
-   */
-  const handleForm = async () => {
-    // check the data
-
-    try {
-
-    } catch (error) {
-      // remove the loader
-      isLoading = false;
-    };
-  }
-
-  /**
-   * Handle text inputs
-   * @param name {string} - input name
-   * @param value {number|string} - input value
-   * @returns {*}
-   */
-  const handleInput = ({ detail: { name = '', value = '' } = {} }) => {
-    profile[name] = value;
-    highlight[name] = '';
-    formError = '';
-  }
 
   /**
    * Load profile data
@@ -75,6 +43,7 @@
       return isLoading = false;
     } catch (error) {
       isLoading = false;
+      formError = 'Error!';
       return console.log(error);
     }
   };
@@ -89,29 +58,24 @@
 {#if isLoading}
   <Loader { isLoading } />
 {:else}
-  <div class="content-wrap">
-    <div class="content content-width">
-      <div class="page-title mb-1">
-        Profile
+  {#if formError}
+    <Error message={formError} />
+  {:else}
+    <div class="content-wrap">
+      <div class="content content-width">
+        <div class="content-title mb-1">
+          Profile
+        </div>
+        <DetailsSection
+          { isLoading }
+          firstName={profile.firstName}
+          lastName={profile.lastName}
+        />
       </div>
-      <div class="section-title">
-        Update personal details
-      </div>
-      <DetailsForm
-        { isLoading }
-        firstName={profile.firstName}
-        lastName={profile.lastName}
-        firstNameHighlight={highlight.firstName}
-        lastNameHighlight={highlight.lastName}
-        on:handle-form={handleForm}
-        on:handle-input={handleInput}
-      />
     </div>
-  </div>
+  {/if}
 {/if}
 
 <style>
-  .section-title {
-    font-weight: bold;
-  }
+
 </style>
