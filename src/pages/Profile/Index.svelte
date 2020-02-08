@@ -6,12 +6,13 @@
   import DetailsSection from './DetailsSection.svelte';
   import Error from '../../reusable/Error.svelte';
   import Loader from '../../reusable/Loader.svelte';
+  import PasswordSection from './PasswordSection.svelte';
 
   import { deleteTokens, getTokens } from '../../utilities/tokens';
   import { store } from '../../store';
 
-  let formError = '';
   let isLoading = true;
+  let loadError = '';
   let profile = {
     avatarLink: '',
     created: null,
@@ -49,31 +50,39 @@
   };
 
   /**
+   * Switch the loader from children components
+   * @param detail {boolean} - event detail
+   * @returns {void}
+   */
+  const switchLoader = ({ detail = false }) => isLoading = detail;
+
+  /**
    * On component mounting
    * @returns {Promise<void>}
    */
   onMount(() => loadProfileData());
 </script>
 
-{#if isLoading}
-  <Loader { isLoading } />
+<Loader { isLoading } />
+{#if loadError}
+  <Error message={loadError} />
 {:else}
-  {#if formError}
-    <Error message={formError} />
-  {:else}
-    <div class="content-wrap">
-      <div class="content content-width">
-        <div class="content-title mb-1">
-          Profile
-        </div>
-        <DetailsSection
-          { isLoading }
-          firstName={profile.firstName}
-          lastName={profile.lastName}
-        />
+  <div class="content-wrap">
+    <div class="content content-width">
+      <div class="content-title mb-1">
+        Profile
       </div>
+      <DetailsSection
+        { isLoading }
+        firstName={profile.firstName}
+        lastName={profile.lastName}
+      />
+      <PasswordSection
+        { isLoading }
+        on:switch-loader={switchLoader}
+      />
     </div>
-  {/if}
+  </div>
 {/if}
 
 <style>
