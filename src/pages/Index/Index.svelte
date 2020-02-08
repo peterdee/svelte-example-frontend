@@ -30,11 +30,12 @@
       store.setLoggedIn(false);
       return deleteTokens();
     } catch (error) {
+      store.setLoggedIn(false);
       return deleteTokens();
     }
   };
 
-    /**
+  /**
    * Handle logging out from all devices
    * @returns {*}
    */
@@ -52,6 +53,7 @@
       store.setLoggedIn(false);
       return deleteTokens();
     } catch (error) {
+      store.setLoggedIn(false);
       return deleteTokens();
     }
   };
