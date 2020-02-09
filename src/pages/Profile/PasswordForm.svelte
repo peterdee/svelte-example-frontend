@@ -2,11 +2,14 @@
   import { createEventDispatcher } from 'svelte';
 
   import Button from '../../reusable/Button.svelte';
-  import Error from '../../reusable/Error.svelte';
+  import Info from '../../reusable/Info.svelte';
   import Input from '../../reusable/Input.svelte';
 
   export let confirmNewPasswordHighlight = '';
-  export let formError = '';
+  export let formMessage = {
+    message: '',
+    type: '',
+  };
   export let isLoading = false;
   export let newPasswordHighlight = '';
   export let oldPasswordHighlight = '';
@@ -24,7 +27,7 @@
 </script>
 
 <form
-  class="password-form"
+  class="password-form margin"
   on:submit|preventDefault={handleForm}
 >
   <div class="margin">
@@ -62,7 +65,10 @@
     text="Update"
     type="submit"
   />
-  <Error message={formError} />
+  <Info
+    message={formMessage.message}
+    type={formMessage.type}
+  />
 </form>
 
 <style>

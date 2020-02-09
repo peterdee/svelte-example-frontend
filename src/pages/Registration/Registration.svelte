@@ -63,7 +63,7 @@
         method: 'POST',
         url: 'https://express-mongo-node.herokuapp.com/api/v1/registration',
       });
-      const { data: { data: { role = '', tokens: { access = '', refresh = '' } } = {} } = {} } = response;
+      const { data: { data: { role = '', tokens: { access = '', refresh = '' } = {} } = {} } = {} } = response;
       
       // stop the loader
       isLoading = false;

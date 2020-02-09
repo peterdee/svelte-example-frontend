@@ -76,6 +76,7 @@
         { isLoading }
         firstName={profile.firstName}
         lastName={profile.lastName}
+        on:switch-loader={switchLoader}
       />
       <PasswordSection
         { isLoading }
