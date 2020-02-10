@@ -3,6 +3,7 @@
   import { navigateTo } from 'svelte-router-spa';
   import { onMount } from 'svelte';
 
+  import DeleteAccountSection from './DeleteAccountSection.svelte';
   import DetailsSection from './DetailsSection.svelte';
   import Error from '../../reusable/Error.svelte';
   import Loader from '../../reusable/Loader.svelte';
@@ -79,6 +80,10 @@
         on:switch-loader={switchLoader}
       />
       <PasswordSection
+        { isLoading }
+        on:switch-loader={switchLoader}
+      />
+      <DeleteAccountSection
         { isLoading }
         on:switch-loader={switchLoader}
       />
