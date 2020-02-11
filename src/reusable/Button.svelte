@@ -1,4 +1,8 @@
 <script>
+  import { createEventDispatcher } from 'svelte';
+  
+  const dispatch = createEventDispatcher();
+
   export let disabled = false;
   export let size = 'auto';
   export let text = '';
@@ -12,6 +16,7 @@
   class={`noselect ${buttonSize}`}
   { disabled }
   { type }
+  on:click={() => dispatch('handle-click')}
 >
   { text }
 </button>
