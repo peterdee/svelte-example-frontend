@@ -3,6 +3,7 @@
   import { navigateTo } from 'svelte-router-spa';
   import { onMount } from 'svelte';
 
+  import AvatarSection from './AvatarSection.svelte';
   import DeleteAccountSection from './DeleteAccountSection.svelte';
   import DetailsSection from './DetailsSection.svelte';
   import Error from '../../reusable/Error.svelte';
@@ -73,6 +74,10 @@
       <div class="content-title mb-1">
         Profile
       </div>
+      <AvatarSection
+        { isLoading }
+        on:switch-loader={switchLoader}
+      />
       <DetailsSection
         { isLoading }
         firstName={profile.firstName}
