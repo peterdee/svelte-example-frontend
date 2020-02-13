@@ -9,15 +9,26 @@
   import Button from '../../reusable/Button.svelte';
   import Info from '../../reusable/Info.svelte';
 
+  export let imageLink = '';
   export let isLoading = false;
-
+  
+  let files = [];
   let formMessage = {
     message: '',
     type: '',
   };
-  
-  const dispatch = createEventDispatcher();
+  let localLoading = false;
 
+  const acceptedTypes = [
+    'image/jpeg',
+    'image/png',
+  ];
+
+  // automatically upload the file if it was selected
+  $: if (files.length > 0) {
+    handleFileSelection();
+  }
+  
   /**
    * Switch loader
    * @param isVisible {boolean} - should the loader be visible
@@ -25,8 +36,31 @@
    */
   const handleLoader = (isVisible = false) => dispatch('switch-loader', isVisible);
 
+  const handleFileSelection = () => {
+    console.log(files[0])
+    const [file] = files;
+    formMessage = {
+        message: '',
+        type: 'error',
+    };
+
+    // check file type
+    if (!acceptedTypes.includes(file.type)) return formMessage.message = 'Please use JPEG or PNG file!';
+
+    // check file size
+    if (file.size > 50000) return formMessage.message = 'Maximum file size is 50KB!';
+
+    formMessage = {
+        message: 'Uploading the file...',
+        type: 'info',
+    };
+    return imageLink = URL.createObjectURL(files[0]);
+  }
+
+  const dispatch = createEventDispatcher();
+
   /**
-   * Handle account deleting
+   * Handle avatar deleting
    * @returns {Promise<void>}
    */
   const handleClick = async () => {
@@ -35,23 +69,19 @@
     handleLoader(true);
     try {
       // send the request
-      await axios({
-        headers: {
-          'X-ACCESS-TOKEN': accessToken,
-        },
-        method: 'DELETE',
-        url: 'https://express-mongo-node.herokuapp.com/api/v1/account',
-      });
+      // await axios({
+      //   headers: {
+      //     'X-ACCESS-TOKEN': accessToken,
+      //   },
+      //   method: 'DELETE',
+      //   url: 'https://express-mongo-node.herokuapp.com/api/v1/account',
+      // });
 
-      // log the user out, redirect to the index in 5 seconds
-      deleteTokens();
       formMessage = {
-        message: 'Account deleted! Redirecting in 5 seconds...',
+        message: 'Avatar uploaded!',
         type: 'success',
       };
-      handleLoader(false);
-      store.setLoggedIn(false);
-      return setTimeout(() => navigateTo('/'), 5000);
+      return handleLoader(false);
     } catch (error) {
       // remove the loader
       handleLoader(false);
@@ -69,15 +99,6 @@
       return formMessage.message = 'Access denied!';
     }
   };
-
-  let files = [];
-  let imageLink = '';
-  let selectorType = '';
-
-  $: if (files.length > 0) {
-    console.log(files[0]);
-    imageLink = URL.createObjectURL(files[0]);
-  }
 </script>
 
 <div class="section-title margin">
@@ -87,7 +108,7 @@
   <div class="image-upload">
     <label for="file-selector">
       <img
-        alt="{selectorType}"
+        alt="Avatar"
         class="image"
         src="{imageLink}"
       />
