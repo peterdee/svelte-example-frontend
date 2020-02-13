@@ -2,6 +2,7 @@
   // possible types
   const types = {
     error: 'error',
+    info: 'info',
     success: 'success',
   };
 
@@ -28,6 +29,9 @@
   }
   .error {
     color: #ff2700;
+  }
+  .info {
+    color: #909090;
   }
   .success {
     color: #009255; 
