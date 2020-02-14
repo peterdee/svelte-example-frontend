@@ -15,7 +15,7 @@
     "start": "sirv public -s"
   },
   "engines": {
-    "node": "13.7.0",
+    "node": "13.8.0",
     "npm": "6.13.7"
   },
   "repository": {

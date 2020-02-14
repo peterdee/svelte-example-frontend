@@ -25,7 +25,7 @@
     height: 100vh;
     left: 0;
     pointer-events: none;
-    position: absolute;
+    position: fixed;
     top: 0;
     width: 100%;
   }
