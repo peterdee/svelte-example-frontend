@@ -13,6 +13,7 @@
   import { deleteTokens, getTokens } from '../../utilities/tokens';
   import { store } from '../../store';
 
+  const defaultAvatar = './assets/avatar.png';
   let isLoading = true;
   let loadError = '';
   let profile = {
