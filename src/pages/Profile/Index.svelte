@@ -17,6 +17,7 @@
   let isLoading = true;
   let loadError = '';
   let profile = {
+    about: '',
     avatarLink: '',
     created: null,
     email: '',
@@ -77,7 +78,7 @@
       </div>
       <AvatarSection
         { isLoading }
-        imageLink={profile.avatarLink || defaultAvatar}
+        avatarLink={profile.avatarLink}
         on:switch-loader={switchLoader}
       />
       <DetailsSection

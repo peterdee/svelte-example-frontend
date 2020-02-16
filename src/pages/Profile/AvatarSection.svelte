@@ -9,7 +9,7 @@
   import Button from '../../reusable/Button.svelte';
   import Info from '../../reusable/Info.svelte';
 
-  export let imageLink = '';
+  export let avatarLink = '';
   export let isLoading = false;
   
   let files = [];
@@ -24,10 +24,7 @@
     'image/png',
   ];
 
-  // automatically upload the file if it was selected
-  $: if (files.length > 0) {
-    handleFileSelection();
-  }
+  const dispatch = createEventDispatcher();
   
   /**
    * Switch loader
@@ -36,8 +33,11 @@
    */
   const handleLoader = (isVisible = false) => dispatch('switch-loader', isVisible);
 
-  const handleFileSelection = () => {
-    console.log(files[0])
+  /**
+   * Handle file selection
+   * @returns {Promise<void>}
+   */
+  const handleFileSelection = async () => {
     const [file] = files;
     formMessage = {
         message: '',
@@ -54,10 +54,43 @@
         message: 'Uploading the file...',
         type: 'info',
     };
-    return imageLink = URL.createObjectURL(files[0]);
-  }
+    avatarLink = URL.createObjectURL(files[0]);
 
-  const dispatch = createEventDispatcher();
+    // get the token and show the loader
+    const { accessToken = '' } = getTokens();
+
+    // create FormData
+    const formData = new FormData();
+    formData.append('file', files[0]);
+
+    // show the loader
+    handleLoader(true);
+    
+    // send the request
+    try {
+      await axios({
+        data: formData,
+        headers: {
+          'X-ACCESS-TOKEN': accessToken,
+          'Content-Type': 'multipart/formdata',
+        },
+        method: 'PATCH',
+        url: 'https://express-mongo-node.herokuapp.com/api/v1/avatar',
+      });
+
+      formMessage = {
+        message: 'Avatar uploaded!',
+        type: 'success',
+      };
+      return handleLoader(false);
+    } catch (error) {
+      // remove the loader
+      handleLoader(false);
+
+      // handle error response
+      const { response: { data: { data = {}, info = '', status = null } = {} } = {} } = error;
+    }
+  }
 
   /**
    * Handle avatar deleting
@@ -66,19 +99,22 @@
   const handleClick = async () => {
     // get the token and show the loader
     const { accessToken = '' } = getTokens();
+
+    // show the loader
     handleLoader(true);
+    
+    // send the request
     try {
-      // send the request
-      // await axios({
-      //   headers: {
-      //     'X-ACCESS-TOKEN': accessToken,
-      //   },
-      //   method: 'DELETE',
-      //   url: 'https://express-mongo-node.herokuapp.com/api/v1/account',
-      // });
+      await axios({
+        headers: {
+          'X-ACCESS-TOKEN': accessToken,
+        },
+        method: 'DELETE',
+        url: 'https://express-mongo-node.herokuapp.com/api/v1/avatar',
+      });
 
       formMessage = {
-        message: 'Avatar uploaded!',
+        message: 'Avatar deleted!',
         type: 'success',
       };
       return handleLoader(false);
@@ -99,6 +135,11 @@
       return formMessage.message = 'Access denied!';
     }
   };
+
+  // automatically upload the file if it was selected
+  $: if (files.length > 0) {
+    handleFileSelection();
+  }
 </script>
 
 <div class="section-title margin">
@@ -110,7 +151,7 @@
       <img
         alt="Avatar"
         class="image"
-        src="{imageLink}"
+        src="{avatarLink}"
       />
     </label>
     <input
