@@ -18,7 +18,7 @@
   let loadError = '';
   let profile = {
     about: '',
-    avatarLink: '',
+    avatarLink: defaultAvatar,
     created: null,
     email: '',
     emailIsVerified: false,
@@ -45,11 +45,17 @@
         url: 'https://express-mongo-node.herokuapp.com/api/v1/account',
       });
       profile = { ...loadedProfile };
+      if (!profile.avatarLink) {
+        profile.avatarLink = defaultAvatar;
+      }
       return isLoading = false;
     } catch (error) {
+      // disable the loade
       isLoading = false;
+
+
       loadError = 'Error!';
-      return console.log(error);
+
     }
   };
 

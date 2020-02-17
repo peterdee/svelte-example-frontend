@@ -45,7 +45,9 @@
     };
 
     // check file type
-    if (!acceptedTypes.includes(file.type)) return formMessage.message = 'Please use JPEG or PNG file!';
+    if (!acceptedTypes.includes(file.type)) {
+      return formMessage.message = 'Please use JPEG or PNG file!';
+    }
 
     // check file size
     if (file.size > 50000) return formMessage.message = 'Maximum file size is 50KB!';
@@ -117,6 +119,7 @@
         message: 'Avatar deleted!',
         type: 'success',
       };
+      avatarLink = './assets/avatar.png';
       return handleLoader(false);
     } catch (error) {
       // remove the loader
