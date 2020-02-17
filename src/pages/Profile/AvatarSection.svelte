@@ -151,11 +151,10 @@
 <div class="section">
   <div class="image-upload">
     <label for="file-selector">
-      <img
-        alt="Avatar"
-        class="image"
-        src="{avatarLink}"
-      />
+      <div
+        class="avatar"
+        style={`background-image: url(${avatarLink});`}
+      ></div>
     </label>
     <input
       class="input"
@@ -164,12 +163,15 @@
       bind:files
     />
   </div>
-  <Button
-    disabled={isLoading}
-    text="Delete avatar"
-    type="button"
-    on:handle-click={handleClick}
-  />
+  <div
+    class="delete"
+    title="Delete avatar"
+    on:click={handleClick}
+  >
+    ✖
+  </div>
+</div>
+<div class="section">
   <Info
     message={formMessage.message}
     type={formMessage.type}
@@ -177,25 +179,32 @@
 </div>
 
 <style>
-  .image {
+  .avatar {
+    background-repeat:no-repeat;
+    background-size: cover;
     border-radius: 50%;
-    height: 100%;
-    margin: 0 auto;
-    max-height: 150px;
-    max-width: 150px;
-    width: 100%;
+    cursor: pointer;
+    height: 150px;
+    width: 150px;
+  }
+  .delete {
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 600;
+    height: 24px;
   }
   .input {
     display: none;
   }
-  .margin {
-    margin-bottom: 15px;
-  }
   .section {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
     max-width: 349px;
     width: 100%;
   }
   .section-title {
     font-weight: bold;
+    margin-bottom: 15px;
   }
 </style>
