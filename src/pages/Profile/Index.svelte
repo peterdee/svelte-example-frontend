@@ -10,7 +10,8 @@
   import Loader from '../../reusable/Loader.svelte';
   import PasswordSection from './PasswordSection.svelte';
 
-  import { deleteTokens, getTokens } from '../../utilities/tokens';
+  import { getTokens } from '../../utilities/tokens';
+  import refreshTokens from '../../utilities/refresh-tokens';
   import { store } from '../../store';
 
   const defaultAvatar = './assets/avatar.png';
@@ -35,11 +36,10 @@
    * @returns {Promise<void>}
    */
   const loadProfileData = async () => {
-    const { accessToken = '' } = getTokens();
     try {
       const { data: { data: loadedProfile = {} } = {} } = await axios({
         headers: {
-          'X-ACCESS-TOKEN': accessToken,
+          'X-ACCESS-TOKEN': getTokens().accessToken,
         },
         method: 'GET',
         url: 'https://express-mongo-node.herokuapp.com/api/v1/account',
@@ -50,9 +50,18 @@
       }
       return isLoading = false;
     } catch (error) {
-      // disable the loade
+      // disable the loader
       isLoading = false;
-      loadError = 'Error!';
+
+      // handle error response
+      const { response: { data: { data = {}, info = '', status = null } = {} } = {} } = error;
+      if (status === 401 && info === 'INVALID_TOKEN' || info === 'MISSING_TOKEN' || info === 'TOKEN_EXPIRED') {
+        // try to refresh the tokens
+        isLoading = true;
+        await refreshTokens();
+        isLoading = false;
+        return navigateTo('/profile');
+      }
     }
   };
 
@@ -80,7 +89,6 @@
         Profile
       </div>
       <AvatarSection
-        { isLoading }
         avatarLink={profile.avatarLink}
         on:switch-loader={switchLoader}
       />
