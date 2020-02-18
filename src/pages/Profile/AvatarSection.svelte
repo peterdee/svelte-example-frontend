@@ -3,21 +3,20 @@
   import { createEventDispatcher } from 'svelte';
   import { navigateTo } from 'svelte-router-spa';
 
-  import { deleteTokens, getTokens } from '../../utilities/tokens';
+  import { getTokens } from '../../utilities/tokens';
   import { store } from '../../store';
 
   import Button from '../../reusable/Button.svelte';
   import Info from '../../reusable/Info.svelte';
 
   export let avatarLink = '';
-  export let isLoading = false;
   
+  const defaultAvatar = './assets/avatar.png';
   let files = [];
   let formMessage = {
     message: '',
     type: '',
   };
-  let localLoading = false;
 
   const acceptedTypes = [
     'image/jpeg',
@@ -55,33 +54,24 @@
     // check file size
     if (file.size > 50000) return formMessage.message = 'Maximum file size is 50KB!';
 
-    formMessage = {
-      message: 'Uploading the file...',
-      type: 'info',
-    };
-
-    // get the token and show the loader
-    const { accessToken = '' } = getTokens();
-
     // create FormData
     const formData = new FormData();
     formData.append('file', file);
-
-    // show the loader
-    handleLoader(true);
     
     // send the request
     try {
+      handleLoader(true);
       await axios({
         data: formData,
         headers: {
-          'X-ACCESS-TOKEN': accessToken,
+          'X-ACCESS-TOKEN': getTokens().accessToken,
           'Content-Type': 'multipart/formdata',
         },
         method: 'PATCH',
         url: 'https://express-mongo-node.herokuapp.com/api/v1/avatar',
       });
 
+      // if everything is OK
       formMessage = {
         message: 'Avatar uploaded!',
         type: 'success',
@@ -102,27 +92,23 @@
    * @returns {Promise<void>}
    */
   const handleClick = async () => {
-    // get the token and show the loader
-    const { accessToken = '' } = getTokens();
-
-    // show the loader
-    handleLoader(true);
-    
     // send the request
     try {
+      handleLoader(true);
       await axios({
         headers: {
-          'X-ACCESS-TOKEN': accessToken,
+          'X-ACCESS-TOKEN': getTokens().accessToken,
         },
         method: 'DELETE',
         url: 'https://express-mongo-node.herokuapp.com/api/v1/avatar',
       });
 
+      // if everything is OK
       formMessage = {
         message: 'Avatar deleted!',
         type: 'success',
       };
-      avatarLink = './assets/avatar.png';
+      avatarLink = defaultAvatar;
       files = [];
       return handleLoader(false);
     } catch (error) {
@@ -156,6 +142,7 @@
       ></div>
     </label>
     <input
+      accept=".jpeg,.jpg,.png"
       class="input"
       id="file-selector"
       type="file"
@@ -189,7 +176,7 @@
   .delete {
     cursor: pointer;
     font-size: 20px;
-    font-weight: 600;
+    font-weight: 400;
     height: 24px;
   }
   .input {
