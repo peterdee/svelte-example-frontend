@@ -35,13 +35,16 @@
 
   /**
    * Handle file selection
+   * @param event {object} - event object 
    * @returns {Promise<void>}
    */
-  const handleFileSelection = async () => {
-    const [file] = files;
+  const handleFileSelection = async (event = {}) => {
+    const [file] = event.target.files;   
+    files[0] = file;
+    event.target.value = null;
     formMessage = {
-        message: '',
-        type: 'error',
+      message: '',
+      type: 'error',
     };
 
     // check file type
@@ -53,17 +56,16 @@
     if (file.size > 50000) return formMessage.message = 'Maximum file size is 50KB!';
 
     formMessage = {
-        message: 'Uploading the file...',
-        type: 'info',
+      message: 'Uploading the file...',
+      type: 'info',
     };
-    avatarLink = URL.createObjectURL(files[0]);
 
     // get the token and show the loader
     const { accessToken = '' } = getTokens();
 
     // create FormData
     const formData = new FormData();
-    formData.append('file', files[0]);
+    formData.append('file', file);
 
     // show the loader
     handleLoader(true);
@@ -84,6 +86,7 @@
         message: 'Avatar uploaded!',
         type: 'success',
       };
+      avatarLink = URL.createObjectURL(file);
       return handleLoader(false);
     } catch (error) {
       // remove the loader
@@ -120,6 +123,7 @@
         type: 'success',
       };
       avatarLink = './assets/avatar.png';
+      files = [];
       return handleLoader(false);
     } catch (error) {
       // remove the loader
@@ -138,11 +142,6 @@
       return formMessage.message = 'Access denied!';
     }
   };
-
-  // automatically upload the file if it was selected
-  $: if (files.length > 0) {
-    handleFileSelection();
-  }
 </script>
 
 <div class="section-title margin">
@@ -160,7 +159,7 @@
       class="input"
       id="file-selector"
       type="file"
-      bind:files
+      on:change={handleFileSelection}
     />
   </div>
   <div

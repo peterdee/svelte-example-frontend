@@ -52,10 +52,7 @@
     } catch (error) {
       // disable the loade
       isLoading = false;
-
-
       loadError = 'Error!';
-
     }
   };
 
