@@ -81,9 +81,24 @@
     } catch (error) {
       // remove the loader
       handleLoader(false);
+      formMessage.type = 'error';
 
       // handle error response
       const { response: { data: { data = {}, info = '', status = null } = {} } = {} } = error;
+      if (status === 400) {
+        if (info === 'MISSING_FILE')  return formMessage.message = 'Missing the file!';
+        if (info === 'INVALID_FILE_SIZE')  return formMessage.message = 'Maximum file size is 50KB!';
+        if (info === 'INVALID_FILE_TYPE')  return formMessage.message = 'Please select a JPEG or PNG file!';
+      }
+      if (status === 401 && info === 'INVALID_TOKEN' || info === 'MISSING_TOKEN' || info === 'TOKEN_EXPIRED') {
+        return refreshTokens();
+      }
+      
+      if (info === 'INTERNAL_SERVER_ERROR' && status === 500) {
+        return formMessage.message = 'Oops! Something went wrong...';
+      }
+
+      return formMessage.message = 'Access denied!';
     }
   }
 
@@ -114,13 +129,14 @@
     } catch (error) {
       // remove the loader
       handleLoader(false);
+      formMessage.type = 'error';
 
       // handle error response
       const { response: { data: { data = {}, info = '', status = null } = {} } = {} } = error;
-
-      // TODO: handle the 401 error (token-related)
-
-      formMessage.type = 'error';
+      if (status === 401 && info === 'INVALID_TOKEN' || info === 'MISSING_TOKEN' || info === 'TOKEN_EXPIRED') {
+        return refreshTokens();
+      }
+      
       if (info === 'INTERNAL_SERVER_ERROR' && status === 500) {
         return formMessage.message = 'Oops! Something went wrong...';
       }
