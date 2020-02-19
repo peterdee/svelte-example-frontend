@@ -29,7 +29,8 @@ export default async () => {
     // if everything is OK
     store.setLoggedIn(true);
     store.setRole(role);
-    return storeTokens({ accessToken: access, refreshToken: refresh });
+    storeTokens({ accessToken: access, refreshToken: refresh });
+    return navigateTo('/');
   } catch (error) {
     deleteTokens();
     store.setLoggedIn(false);

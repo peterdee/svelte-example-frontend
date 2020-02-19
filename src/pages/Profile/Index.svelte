@@ -50,18 +50,13 @@
       }
       return isLoading = false;
     } catch (error) {
-      // disable the loader
-      isLoading = false;
-
-      // handle error response
       const { response: { data: { data = {}, info = '', status = null } = {} } = {} } = error;
       if (status === 401 && info === 'INVALID_TOKEN' || info === 'MISSING_TOKEN' || info === 'TOKEN_EXPIRED') {
-        // try to refresh the tokens
-        isLoading = true;
-        await refreshTokens();
-        isLoading = false;
-        return navigateTo('/profile');
+        return refreshTokens();
       }
+
+      isLoading = false;
+      return loadError = 'Oops! Something went wrong...';
     }
   };
 
@@ -109,7 +104,3 @@
     </div>
   </div>
 {/if}
-
-<style>
-
-</style>
