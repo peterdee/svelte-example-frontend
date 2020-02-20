@@ -11,7 +11,7 @@
   import PasswordSection from './PasswordSection.svelte';
 
   import { getTokens } from '../../utilities/tokens';
-  import refreshTokens from '../../utilities/refresh-tokens';
+  import { matchingInfo, refreshTokens } from '../../utilities/refresh-tokens';
   import { store } from '../../store';
 
   const defaultAvatar = './assets/avatar.png';
@@ -51,7 +51,7 @@
       return isLoading = false;
     } catch (error) {
       const { response: { data: { data = {}, info = '', status = null } = {} } = {} } = error;
-      if (status === 401 && info === 'INVALID_TOKEN' || info === 'MISSING_TOKEN' || info === 'TOKEN_EXPIRED') {
+      if (status === 401 && matchingInfo.includes(info)) {
         return refreshTokens();
       }
 
@@ -80,7 +80,7 @@
 {:else}
   <div class="content-wrap">
     <div class="content content-width">
-      <div class="content-title mb-1">
+      <div class="content-title mb-1 noselect">
         Profile
       </div>
       <AvatarSection

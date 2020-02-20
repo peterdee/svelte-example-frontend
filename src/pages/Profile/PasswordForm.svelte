@@ -27,7 +27,7 @@
 </script>
 
 <form
-  class="password-form margin"
+  class="password-form"
   on:submit|preventDefault={handleForm}
 >
   <div class="margin">

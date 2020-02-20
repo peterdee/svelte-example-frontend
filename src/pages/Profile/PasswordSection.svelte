@@ -6,6 +6,7 @@
   import PasswordForm from './PasswordForm.svelte';
 
   import { getTokens, storeTokens } from '../../utilities/tokens';
+  import { matchingInfo, refreshTokens } from '../../utilities/refresh-tokens';
 
   export let isLoading = false;
 
@@ -97,25 +98,25 @@
         type: 'success',
       };
     } catch (error) {
-      // remove the loader
       handleLoader(false);
-
-      // handle error response
       const { response: { data: { data = {}, info = '', status = null } = {} } = {} } = error;
+
       formMessage.type = 'error';
-      if (info === 'INVALID_DATA' && status === 400) {
-        const { invalid = [] } = data;
-        invalid.forEach((field = '') => highlight[field] = 'error');
-        return formMessage.message = 'Invalid data!';
+      
+      if (status === 400) {
+        if (info === 'INVALID_DATA' || info === 'MISSING_DATA') {
+          const fields = data[info.split('_')[0].toLowerCase()] || [];
+          fields.forEach((field = '') => highlight[field] = 'error');
+          return formMessage.message = 'Invalid data!';
+        }
+        if (info === 'OLD_PASSWORD_IS_INVALID') {
+          highlight.oldPassword = 'error';
+          return formMessage.message = 'Old password is invalid!';
+        }
       }
-      if (info === 'MISSING_DATA' && status === 400) {
-        const { missing = [] } = data;
-        missing.forEach((field = '') => highlight[field] = 'error');
-        return formMessage.message = 'Missing data!';
-      }
-      if (info === 'OLD_PASSWORD_IS_INVALID' && status === 400) {
-        highlight.oldPassword = 'error';
-        return formMessage.message = 'Old password is invalid!';
+
+      if (status === 401 && matchingInfo.includes(info)) {
+        return refreshTokens();
       }
 
       keys.forEach((key = '') => highlight[key] = '');
