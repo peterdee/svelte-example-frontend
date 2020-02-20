@@ -5,7 +5,10 @@
   export let isLoading = false;
   export let lastName = '';
 
-  let formError = '';
+  let formMessage = {
+    message: '',
+    type: '',
+  };
   let highlight = {
     firstName: '',
     lastName: '',
@@ -35,16 +38,20 @@
   const handleInput = ({ detail: { name = '', value = '' } = {} }) => {
     profile[name] = value;
     highlight[name] = '';
-    formError = '';
+    formMessage = {
+      message: '',
+      type: '',
+    };
   }
 </script>
 
-<div class="section-title">
+<div class="section-title margin noselect">
   Update personal details
 </div>
 <DetailsForm
   { isLoading }
   { firstName }
+  { formMessage }
   { lastName}
   firstNameHighlight={highlight.firstName}
   lastNameHighlight={highlight.lastName}
@@ -53,6 +60,9 @@
 />
 
 <style>
+  .margin {
+    margin-bottom: 15px;
+  }
   .section-title {
     font-weight: bold;
   }

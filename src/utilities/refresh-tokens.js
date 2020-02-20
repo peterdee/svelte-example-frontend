@@ -4,11 +4,18 @@ import { navigateTo } from 'svelte-router-spa';
 import { deleteTokens, getTokens, storeTokens } from './tokens';
 import { store } from '../store';
 
+// matching 'info' fields 
+export const matchingInfo = [
+  'INVALID_TOKEN',
+  'MISSING_TOKEN',
+  'TOKEN_EXPIRED',
+];
+
 /**
  * Refresh the tokens
  * @returns {Promise<void>}
  */
-export default async () => {
+export const refreshTokens = async () => {
   // check the token
   const { refreshToken = '' } = getTokens();
   if (!refreshToken) {

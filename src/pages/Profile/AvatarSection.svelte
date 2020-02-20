@@ -1,6 +1,7 @@
 <script>
   import axios from 'axios';
   import { createEventDispatcher } from 'svelte';
+  import { matchingInfo, refreshTokens } from '../../utilities/refresh-tokens';
   import { navigateTo } from 'svelte-router-spa';
 
   import { getTokens } from '../../utilities/tokens';
@@ -18,6 +19,7 @@
     type: '',
   };
 
+  // accepted MIME types
   const acceptedTypes = [
     'image/jpeg',
     'image/png',
@@ -90,7 +92,7 @@
         if (info === 'INVALID_FILE_SIZE')  return formMessage.message = 'Maximum file size is 50KB!';
         if (info === 'INVALID_FILE_TYPE')  return formMessage.message = 'Please select a JPEG or PNG file!';
       }
-      if (status === 401 && info === 'INVALID_TOKEN' || info === 'MISSING_TOKEN' || info === 'TOKEN_EXPIRED') {
+      if (status === 401 && matchingInfo.includes(info)) {
         return refreshTokens();
       }
       
@@ -133,7 +135,7 @@
 
       // handle error response
       const { response: { data: { data = {}, info = '', status = null } = {} } = {} } = error;
-      if (status === 401 && info === 'INVALID_TOKEN' || info === 'MISSING_TOKEN' || info === 'TOKEN_EXPIRED') {
+      if (status === 401 && matchingInfo.includes(info)) {
         return refreshTokens();
       }
       
@@ -146,10 +148,10 @@
   };
 </script>
 
-<div class="section-title margin">
+<div class="section-title margin noselect">
   Avatar
 </div>
-<div class="section">
+<div class="section noselect">
   <div class="image-upload">
     <label for="file-selector">
       <div

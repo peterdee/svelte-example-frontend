@@ -1,6 +1,7 @@
 <script>
   import axios from 'axios';
   import { createEventDispatcher } from 'svelte';
+  import { matchingInfo, refreshTokens } from '../../utilities/refresh-tokens';
   import { navigateTo } from 'svelte-router-spa';
 
   import { deleteTokens, getTokens } from '../../utilities/tokens';
@@ -53,13 +54,11 @@
       store.setLoggedIn(false);
       return setTimeout(() => navigateTo('/'), 5000);
     } catch (error) {
-      // remove the loader
       handleLoader(false);
-
-      // handle error response
       const { response: { data: { data = {}, info = '', status = null } = {} } = {} } = error;
-
-      // TODO: handle the 401 error (token-related)
+      if (status === 401 && matchingInfo.includes(info)) {
+        return refreshTokens();
+      }
 
       formMessage.type = 'error';
       if (info === 'INTERNAL_SERVER_ERROR' && status === 500) {
@@ -71,7 +70,7 @@
   };
 </script>
 
-<div class="section-title margin">
+<div class="section-title margin noselect">
   Delete account
 </div>
 <div class="section">

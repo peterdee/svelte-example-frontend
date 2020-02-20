@@ -2,10 +2,15 @@
   import { createEventDispatcher } from 'svelte';
 
   import Button from '../../reusable/Button.svelte';
+  import Info from '../../reusable/Info.svelte';
   import Input from '../../reusable/Input.svelte';
 
   export let firstName = '';
   export let firstNameHighlight = '';
+  export let formMessage = {
+    message: '',
+    type: '',
+  };
   export let isLoading = false;
   export let lastName = '';
   export let lastNameHighlight = '';
@@ -52,6 +57,10 @@
     disabled={isLoading}
     text="Update"
     type="submit"
+  />
+  <Info
+    message={formMessage.message}
+    type={formMessage.type}
   />
 </form>
 
