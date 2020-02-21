@@ -1,10 +1,10 @@
 <script>
   import axios from 'axios';
   import { createEventDispatcher } from 'svelte';
-  import { matchingInfo, refreshTokens } from '../../utilities/refresh-tokens';
   import { navigateTo } from 'svelte-router-spa';
 
-  import { deleteTokens, getTokens } from '../../utilities/tokens';
+  import { getTokens } from '../../utilities/tokens';
+  import { matchingInfo, refreshTokens } from '../../utilities/refresh-tokens';
   import { store } from '../../store';
 
   import Button from '../../reusable/Button.svelte';
