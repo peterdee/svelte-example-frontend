@@ -32,7 +32,7 @@
           code,
         },
         method: 'POST',
-        url: 'https://express-mongo-node.herokuapp.com/api/v1/verify-email',
+        url: 'https://express-mongo-node.herokuapp.com/api/v1/change-email/verify-code',
       });
       
       isLoading = false;
@@ -47,7 +47,6 @@
         return formError = 'Access denied!';
       }
       if (status === 403) {
-        if (info === 'EMAIL_ALREADY_VERIFIED') return formError = 'Email is already verified!';
         if (info === 'EXPIRED_VERIFICATION_CODE') return formError = 'Verification code is expired!';
         if (info === 'INVALID_VERIFICATION_CODE') return formError = 'Verification code is invalid!';
       }
@@ -64,14 +63,14 @@
 <div class="page-wrap noselect">
   <Loader { isLoading } />
   <div class="margin page-title">
-    Email Verification
+    New email address verification
   </div>
   {#if codeIsVerified}
     <div class="result-title center margin">
       Success!
     </div>
     <div class="center">
-      Your email address is now verified!
+      Your new email address is now verified!
     </div>
   {/if}
   <Error message={formError} />
