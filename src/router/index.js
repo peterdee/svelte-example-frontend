@@ -7,6 +7,7 @@ import Logout from '../pages/Logout/Index.svelte';
 import PasswordRecovery from '../pages/PasswordRecovery/Index.svelte';
 import Profile from '../pages/Profile/Index.svelte';
 import Registration from '../pages/Registration/Registration.svelte';
+import VerifyEmail from '../pages/VerifyEmail/Index.svelte';
 
 export const routes = [
   {
@@ -44,5 +45,9 @@ export const routes = [
   {
     component: Registration,
     name: 'registration',
+  },
+  {
+    component: VerifyEmail,
+    name: 'verify-email/:code',
   },
 ];

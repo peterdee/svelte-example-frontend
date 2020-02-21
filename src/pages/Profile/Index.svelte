@@ -6,6 +6,7 @@
   import AvatarSection from './AvatarSection.svelte';
   import DeleteAccountSection from './DeleteAccountSection.svelte';
   import DetailsSection from './DetailsSection.svelte';
+  import EmailStatusSection from './EmailStatusSection.svelte';
   import Error from '../../reusable/Error.svelte';
   import Loader from '../../reusable/Loader.svelte';
   import PasswordSection from './PasswordSection.svelte';
@@ -87,8 +88,14 @@
         avatarLink={profile.avatarLink}
         on:switch-loader={switchLoader}
       />
+      <EmailStatusSection
+        { isLoading }
+        emailIsVerified={profile.emailIsVerified}
+        on:switch-loader={switchLoader}
+      />
       <DetailsSection
         { isLoading }
+        about={profile.about}
         firstName={profile.firstName}
         lastName={profile.lastName}
         on:switch-loader={switchLoader}
