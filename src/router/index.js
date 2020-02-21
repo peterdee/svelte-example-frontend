@@ -1,4 +1,5 @@
 import AccountRecovery from '../pages/AccountRecovery/Index.svelte';
+import ChangeEmail from '../pages/ChangeEmail/Index.svelte';
 import GetAccountRecoveryLink from '../pages/GetAccountRecoveryLink/Index.svelte';
 import GetPasswordRecoveryLink from '../pages/GetPasswordRecoveryLink/Index.svelte';
 import Index from '../pages/Index/Index.svelte';
@@ -13,6 +14,10 @@ export const routes = [
   {
     component: AccountRecovery,
     name: 'account-recovery/:code',
+  },
+  {
+    component: ChangeEmail,
+    name: 'change-email/:code',
   },
   {
     component: GetAccountRecoveryLink,

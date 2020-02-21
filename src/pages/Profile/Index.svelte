@@ -4,6 +4,7 @@
   import { onMount } from 'svelte';
 
   import AvatarSection from './AvatarSection.svelte';
+  import ChangeEmailSection from './ChangeEmailSection.svelte';
   import DeleteAccountSection from './DeleteAccountSection.svelte';
   import DetailsSection from './DetailsSection.svelte';
   import EmailStatusSection from './EmailStatusSection.svelte';
@@ -91,6 +92,11 @@
       <EmailStatusSection
         { isLoading }
         emailIsVerified={profile.emailIsVerified}
+        on:switch-loader={switchLoader}
+      />
+      <ChangeEmailSection
+        { isLoading }
+        email={profile.email}
         on:switch-loader={switchLoader}
       />
       <DetailsSection
