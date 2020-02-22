@@ -26,8 +26,8 @@
     } catch (error) {
       // remove the loader
       isLoading = false;
-    };
-  }
+    }
+  };
 
   /**
    * Handle text inputs

@@ -1,6 +1,5 @@
 <script>
   import axios from 'axios';
-  import { navigateTo } from 'svelte-router-spa';
   import { onMount } from 'svelte';
 
   import AvatarSection from './AvatarSection.svelte';

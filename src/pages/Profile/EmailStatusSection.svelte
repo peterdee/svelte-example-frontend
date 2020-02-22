@@ -1,7 +1,6 @@
 <script>
   import axios from 'axios';
   import { createEventDispatcher } from 'svelte';
-  import { navigateTo } from 'svelte-router-spa';
 
   import { getTokens } from '../../utilities/tokens';
   import { matchingInfo, refreshTokens } from '../../utilities/refresh-tokens';
