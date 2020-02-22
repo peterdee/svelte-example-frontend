@@ -20,10 +20,13 @@
   const handleForm = () => dispatch('handle-form');
 
   // handle text inputs
-  const handleInput = ({ detail: { target: { name = '', value = '' } = {} } = {} }) => dispatch('handle-input', {
-    name,
-    value,
-  });
+  const handleInput = ({ detail: { target: { name = '', value = '' } = {} } = {} }) => dispatch(
+    'handle-input',
+    {
+      name,
+      value,
+    },
+  );
 </script>
 
 <form

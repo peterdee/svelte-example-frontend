@@ -1,7 +1,6 @@
 <script>
   import axios from 'axios';
   import { createEventDispatcher } from 'svelte';
-  import { navigateTo } from 'svelte-router-spa';
 
   import PasswordForm from './PasswordForm.svelte';
 
@@ -36,7 +35,7 @@
 
   /**
    * Handle form submit
-   * @returns {*}
+   * @returns {Promise<void>}
    */
   const handleForm = async () => {
     // check the data
@@ -132,7 +131,7 @@
    * Handle text inputs
    * @param name {string} - input name
    * @param value {number|string} - input value
-   * @returns {*}
+   * @returns {void}
    */
   const handleInput = ({ detail: { name = '', value = '' } = {} }) => {
     data[name] = value;
