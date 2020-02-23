@@ -4,7 +4,10 @@
   import Button from '../../reusable/Button.svelte';
   import Info from '../../reusable/Info.svelte';
   import Input from '../../reusable/Input.svelte';
+  import Textarea from '../../reusable/Textarea.svelte';
 
+  export let about = '';
+  export let aboutHighlight = '';
   export let firstName = '';
   export let firstNameHighlight = '';
   export let formMessage = {
@@ -17,10 +20,18 @@
 
   const dispatch = createEventDispatcher();
 
-  // handle form submit
+  /**
+   * Handle form submit
+   * @returns {void}
+   */
   const handleForm = () => dispatch('handle-form');
 
-  // handle text inputs
+  /**
+   * Handle inputs and textareas
+   * @param name {string} - target name
+   * @param value {string} - target value
+   * @returns {void}
+   */
   const handleInput = ({ detail: { target: { name = '', value = '' } = {} } = {} }) => dispatch(
     'handle-input',
     {
@@ -53,6 +64,16 @@
       placeholder="Last Name"
       type="text"
       value={lastName}
+      on:handle-input={handleInput}
+    />
+  </div>
+  <div class="margin">
+    <Textarea
+      disabled={isLoading}
+      highlight={aboutHighlight}
+      name="about"
+      placeholder="About"
+      value={about}
       on:handle-input={handleInput}
     />
   </div>

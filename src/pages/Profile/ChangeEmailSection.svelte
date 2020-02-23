@@ -43,8 +43,6 @@
       return formMessage.message = 'Please provide the necessary data!';
     }
 
-    const { accessToken = '' } = getTokens();
-
     // highlight inputs, start loading
     formMessage = {
       message: '',
@@ -57,7 +55,7 @@
       await axios({
         data,
         headers: {
-          'X-ACCESS-TOKEN': accessToken,
+          'X-ACCESS-TOKEN': getTokens().accessToken,
         },
         method: 'POST',
         url: 'https://express-mongo-node.herokuapp.com/api/v1/change-email/send-link',
@@ -77,7 +75,7 @@
           const errorType = info.split('_')[0].toLowerCase();
           const fields = data[errorType] || [];
           fields.forEach((field = '') => highlight[field] = 'error');
-          return formMessage.message = `Provided data is ${errorType}!`;
+          return formMessage.message = `Data is ${errorType}!`;
         }
       }
       if (status === 401 && matchingInfo.includes(info)) {

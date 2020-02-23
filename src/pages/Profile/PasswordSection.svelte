@@ -52,8 +52,6 @@
       return formMessage.message = 'Password confirmation is incorrect!';
     }
 
-    const { accessToken = '' } = getTokens();
-
     // highlight inputs, start loading
     formMessage = {
       message: '',
@@ -69,7 +67,7 @@
           oldPassword: data.oldPassword,
         },
         headers: {
-          'X-ACCESS-TOKEN': accessToken,
+          'X-ACCESS-TOKEN': getTokens().accessToken,
         },
         method: 'PATCH',
         url: 'https://express-mongo-node.herokuapp.com/api/v1/change-password',
@@ -104,9 +102,10 @@
       
       if (status === 400) {
         if (info === 'INVALID_DATA' || info === 'MISSING_DATA') {
+          const errorType = info.split('_')[0].toLowerCase();
           const fields = data[info.split('_')[0].toLowerCase()] || [];
           fields.forEach((field = '') => highlight[field] = 'error');
-          return formMessage.message = 'Invalid data!';
+          return formMessage.message = `Data is ${errorType}!`;
         }
         if (info === 'OLD_PASSWORD_IS_INVALID') {
           highlight.oldPassword = 'error';
